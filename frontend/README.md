@@ -36,7 +36,7 @@ Web app cho thuê xe cao cấp xây bằng **Next.js 14 (App Router) + TypeScrip
 ## Demo
 
 - **Live URL**: https://frontend-seven-mocha-62.vercel.app
-- **Repo**: https://github.com/&lt;user&gt;/rentauto _(placeholder — cập nhật sau khi tạo GitHub repo)_
+- **Repo**: https://github.com/huynhphuquy1450/rentauto
 
 Thử nghiệm các tính năng:
 - **Trang chủ**: Xem danh sách xe, search theo tên/hãng/nhiên liệu
