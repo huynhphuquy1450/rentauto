@@ -5,7 +5,7 @@
 ## Hoàn thành
 
 - Migrate Vite SPA sang Next.js 14 App Router + TypeScript
-- `tsconfig.json`, `next.config.ts`, `tailwind.config.ts`, `postcss.config.mjs`
+- `tsconfig.json`, `next.config.mjs`, `tailwind.config.ts`, `postcss.config.mjs`
 - ESLint (next/core-web-vitals) + Prettier + Husky + lint-staged
 - `.env.example`, `.env.local`
 - Cấu trúc `src/{app,components,features,hooks,lib,types,utils}`

@@ -7,6 +7,8 @@
 - React Hook Form + Zod cho form validation
 - TanStack Query cho data fetching và mutations
 - Context API cho auth + settings (theme/lang)
+- Zustand cho global UI state (`src/lib/ui-store.ts` — mobile menu)
+- JWT custom (jose) + bcryptjs cho auth
 - Recharts cho biểu đồ dashboard
 
 ## App Router
@@ -31,7 +33,7 @@ src/app/
 │   ├── bookings/       → Status update + delete + filter
 │   └── users/          → CRUD with role management
 └── api/
-    ├── auth/{login,register}/
+    ├── auth/{login,register,logout}/
     ├── cars/[id]?/
     ├── bookings/[id]?/
     └── users/[id]?/
@@ -46,11 +48,13 @@ src/app/
 ## Auth flow
 
 1. User submit login form → POST `/api/auth/login`
-2. Server kiểm tra credentials → trả `{ ...user, token }`
-3. `AuthProvider` lưu vào localStorage và context
-4. `<AdminGuard>` (admin layout) redirect non-admin về `/`
-5. Pages cá nhân (my-bookings) tự redirect về `/login?redirect=...` nếu chưa login
-6. `src/middleware.ts` matcher cho `/admin/*` và `/my-bookings/*`
+2. Server verify password bằng bcrypt (`verifyPassword` ở `src/lib/password.ts`) → ký JWT (`signToken` ở `src/lib/auth.ts`, jose HS256, TTL 7 ngày)
+3. Response set httpOnly cookie `token` qua `setAuthCookie` + trả user safe (không có password) cho client
+4. `AuthProvider` lưu user (không kèm token) vào localStorage và context
+5. `<AdminGuard>` (admin layout) redirect non-admin về `/`
+6. Pages cá nhân (my-bookings) tự redirect về `/login?redirect=...` nếu chưa login
+7. `src/middleware.ts` matcher cho `/admin/*` và `/my-bookings/*` — đọc cookie `token`, verify JWT, redirect nếu fail
+8. API routes dùng `requireAuth` / `requireAdmin` (xem `src/lib/auth.ts`) để check JWT trên mỗi request
 
 ## Token expiry & re-login flow
 
@@ -84,5 +88,13 @@ Theo yêu cầu rubric (mục 2 — "Refresh token hoặc re-login flow"), dự 
 ## Testing
 
 - Vitest + jsdom + Testing Library
-- Unit tests: utils (formatters), hooks (use-debounce, use-pagination), schemas (car-schema)
+- 38 tests pass trên 9 file:
+  - `src/utils/formatters.test.ts` — formatVND, formatDate, calculateDays, calculateTotal
+  - `src/hooks/use-debounce.test.ts`, `use-pagination.test.ts`
+  - `src/features/cars/car-schema.test.ts` — Zod validation
+  - `src/lib/auth.test.ts` — signToken / verifyToken / cookie helpers
+  - `src/components/ImageUpload.test.tsx` — preview + size/type validation
+  - `src/app/api/auth/login/route.test.ts` — login flow + bad password
+  - `src/app/api/bookings/route.test.ts` — POST forces userId from token
+  - `src/app/api/users/[id]/route.test.ts` — admin gate + password not exposed
 - Test runs trong CI trước khi build
