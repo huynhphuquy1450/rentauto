@@ -18,8 +18,10 @@ Request:
 
 Response 200:
 ```json
-{ "success": true, "data": { "id": 1, "name": "Admin", "email": "...", "role": "admin", "token": "fake-jwt-..." } }
+{ "success": true, "data": { "id": 1, "name": "Admin", "email": "...", "role": "admin", "token": "<JWT HS256, 7-day TTL>" } }
 ```
+
+Server cũng set httpOnly cookie `token` (cùng giá trị) — middleware/API verify từ cookie, client KHÔNG được phép đọc.
 
 Errors: 400 `INVALID_INPUT`, 401 `INVALID_CREDENTIALS`.
 
@@ -30,8 +32,12 @@ Request:
 { "name": "Nguyễn A", "email": "a@x.com", "password": "abcdef" }
 ```
 
-Response 201: tương tự login.
+Response 201: tương tự login (user + token + httpOnly cookie set).
 Errors: 400, 409 `EMAIL_EXISTS`.
+
+### POST `/api/auth/logout`
+
+Không có request body. Response 200: `{ "success": true }` và clear cookie `token`.
 
 ## Cars
 
