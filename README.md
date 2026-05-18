@@ -26,7 +26,7 @@ Web app cho thuê xe cao cấp xây bằng **Next.js 14 (App Router) + TypeScrip
 | Ngôn ngữ | TypeScript |
 | UI | Tailwind CSS, lucide-react |
 | Forms | React Hook Form + Zod |
-| State | React Context + TanStack Query |
+| State | React Context (auth/settings) + Zustand (UI) + TanStack Query (server state) |
 | Charts | Recharts |
 | Notifications | react-toastify |
 | Tests | Vitest + Testing Library |
@@ -91,15 +91,15 @@ frontend/
 │   │   ├── layout.tsx        # Root layout (Navbar, Footer, providers)
 │   │   └── providers.tsx     # QueryClient, AuthProvider, SettingsProvider
 │   ├── components/           # Navbar, Footer, ImageUpload
-│   ├── features/             # auth/, cars/ (feature-scoped)
+│   ├── features/             # auth/, cars/, bookings/, users/ (feature-scoped)
 │   ├── hooks/                # use-debounce, use-pagination
-│   ├── lib/                  # db (in-memory), settings-context
+│   ├── lib/                  # db (in-memory), auth (JWT), password (bcrypt), ui-store (Zustand), settings-context
 │   ├── types/                # User, Car, Booking, ApiResponse
 │   ├── utils/                # formatters
-│   └── middleware.ts         # Route matcher
+│   └── middleware.ts         # Route matcher (verify JWT cookie)
 ├── tailwind.config.ts
 ├── tsconfig.json
-├── next.config.ts
+├── next.config.mjs
 ├── vitest.config.ts
 └── package.json
 ```
@@ -110,8 +110,9 @@ Xem `docs/api.md`.
 
 | Method | Path | Mô tả |
 |---|---|---|
-| POST | `/api/auth/login` | Đăng nhập |
+| POST | `/api/auth/login` | Đăng nhập (set httpOnly cookie) |
 | POST | `/api/auth/register` | Đăng ký |
+| POST | `/api/auth/logout` | Đăng xuất (clear cookie) |
 | GET/POST | `/api/cars` | List (search/filter/pagination) / Create |
 | GET/PUT/DELETE | `/api/cars/[id]` | Detail / Update / Delete |
 | GET/POST | `/api/bookings` | List / Create |
@@ -121,14 +122,14 @@ Xem `docs/api.md`.
 
 ## Deploy
 
-Khuyến nghị Vercel:
+Deploy lên Vercel — đã sẵn sàng cho Next.js 14:
 
 1. Push lên GitHub
 2. Connect repo trên Vercel
-3. Set env vars (xem `.env.example`)
+3. Set env vars (xem `.env.example`): `JWT_SECRET`, `NEXT_PUBLIC_APP_URL`
 4. Deploy
 
-**Deployed URL**: TBD (sẽ điền sau khi Vercel deploy xong)
+**Live deployment**: https://frontend-seven-mocha-62.vercel.app (Vercel, region iad1)
 
 ## Lộ trình 6 sprint
 
